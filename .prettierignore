@@ -1,0 +1,14 @@
+node_modules
+dist 
+.next 
+.yarn
+_mocks_
+coverage
+cypress
+locales
+public
+
+.prettierc
+
+**/eslintrc.json
+
