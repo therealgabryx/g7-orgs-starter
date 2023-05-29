@@ -21,7 +21,7 @@ function Navbar() {
       <div className="flex flex-row items-center justify-start space-x-4">
         <Logo />
 
-        {router.pathname.includes("/org") && (
+        {router.pathname.includes("/org") && !router.pathname.includes("create") && (
           <>
             <div>
               <div className="text-geist-primary-accent-2">
@@ -41,7 +41,7 @@ function Navbar() {
               </div>
             </div>
             <div className="translate-y-[2px]">
-              <OrganizationSwitcher />
+              <OrganizationSwitcher createOrganizationUrl="/" />
             </div>
           </>
         )}

@@ -2,6 +2,7 @@ import { useOrganizationList, useUser } from "@clerk/nextjs";
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { setTimeout } from "timers";
 import { Card } from "~/components/ui/card";
 import { NavbarLayout } from "~/layouts/navbar-layout";
 
@@ -38,7 +39,8 @@ export default Home;
 
 const OrganizationList = () => {
   const router = useRouter();
-  const { organizationList, isLoaded, setActive } = useOrganizationList();
+
+  const { organizationList, isLoaded, setActive, createOrganization } = useOrganizationList();
 
   if (!isLoaded) {
     // show loading state
@@ -62,7 +64,9 @@ const OrganizationList = () => {
                 <Card
                   onClick={() => {
                     setActive({ organization }).then(() => {
-                      router.push(`/org/${organization.slug}`);
+                      setTimeout(() => {
+                        router.push(`/org/${organization.slug}`);
+                      }, 50);
                     });
                   }}
                   key={organization.id}
@@ -73,6 +77,15 @@ const OrganizationList = () => {
                 {/* </Link> */}
               </>
             ))}
+
+            <Card
+              onClick={() => {
+                router.push("/org/create");
+              }}
+              key={"create-org"}
+              className="bg-white p-6 hover:cursor-pointer">
+              <p> Create New</p>
+            </Card>
           </div>
         </div>
       )}
