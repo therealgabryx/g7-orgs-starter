@@ -58,9 +58,6 @@ const OrganizationList = () => {
           <div className="grid w-full grid-cols-4 gap-4">
             {organizationList.map(({ organization, membership }) => (
               <>
-                {/* <Link
-                  href={`/org/${organization.slug}`}
-                  onClick={() => setActive({ organization })}> */}
                 <Card
                   onClick={() => {
                     setActive({ organization }).then(() => {
@@ -74,7 +71,6 @@ const OrganizationList = () => {
                   <p>Name: {organization.name}</p>
                   <p>Your role: {membership.role}</p>
                 </Card>
-                {/* </Link> */}
               </>
             ))}
 
