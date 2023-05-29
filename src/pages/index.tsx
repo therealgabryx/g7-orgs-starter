@@ -1,8 +1,9 @@
-import { OrganizationSwitcher, UserButton, useOrganizationList, useUser } from "@clerk/nextjs";
+import { useOrganizationList, useUser } from "@clerk/nextjs";
 import { type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
-import { ReactNode } from "react";
+import { useRouter } from "next/router";
+import { Card } from "~/components/ui/card";
+import { NavbarLayout } from "~/layouts/navbar-layout";
 
 const Home: NextPage = () => {
   const { isLoaded, isSignedIn, user } = useUser();
@@ -25,7 +26,7 @@ const Home: NextPage = () => {
         />
       </Head>
       <NavbarLayout>
-        <main className="flex min-h-screen flex-col items-center justify-center">
+        <main className="min-h-[calc(100vh-64px)] p-8">
           <OrganizationList />
         </main>
       </NavbarLayout>
@@ -36,6 +37,7 @@ const Home: NextPage = () => {
 export default Home;
 
 const OrganizationList = () => {
+  const router = useRouter();
   const { organizationList, isLoaded, setActive } = useOrganizationList();
 
   if (!isLoaded) {
@@ -45,86 +47,35 @@ const OrganizationList = () => {
 
   return (
     <div>
-      <h2>Your organizations</h2>
+      <h1 className="mb-8 text-2xl font-semibold">Your Organizations</h1>
+
       {organizationList.length === 0 ? (
         <div>You do not belong to any organizations yet.</div>
       ) : (
-        <ul>
-          {organizationList.map(({ organization, membership }) => (
-            <li key={organization.id}>
-              <p>Name: {organization.name}</p>
-              <p>Your role: {membership.role}</p>
-              <button /* onClick={() => setActive(organization.id)} */>Make active</button>
-            </li>
-          ))}
-        </ul>
+        <div>
+          <div className="grid w-full grid-cols-4 gap-4">
+            {organizationList.map(({ organization, membership }) => (
+              <>
+                {/* <Link
+                  href={`/org/${organization.slug}`}
+                  onClick={() => setActive({ organization })}> */}
+                <Card
+                  onClick={() => {
+                    setActive({ organization }).then(() => {
+                      router.push(`/org/${organization.slug}`);
+                    });
+                  }}
+                  key={organization.id}
+                  className="bg-white p-6 hover:cursor-pointer">
+                  <p>Name: {organization.name}</p>
+                  <p>Your role: {membership.role}</p>
+                </Card>
+                {/* </Link> */}
+              </>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );
 };
-
-function NavbarLayout({ children }: { children: ReactNode }) {
-  return (
-    <div className="h-full min-h-screen w-full bg-neutral-100">
-      <Navbar />
-    </div>
-  );
-}
-
-function Navbar() {
-  return (
-    <div className="flex h-16 w-full flex-row items-center justify-between border-b border-[#EAEAEA] bg-white px-6 py-3">
-      {/* navbar start */}
-      <div className="flex flex-row items-center justify-start space-x-4">
-        <Logo />
-
-        <div>
-          <div className="text-[#EAEAEA]">
-            <svg
-              data-testid="geist-icon"
-              fill="none"
-              height="32"
-              shapeRendering="geometricPrecision"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="1"
-              viewBox="0 0 24 24"
-              width="32">
-              <path d="M16.88 3.549L7.12 20.451" />
-            </svg>
-          </div>
-        </div>
-
-        <div className="translate-y-[2px]">
-          <OrganizationSwitcher />
-        </div>
-      </div>
-
-      {/* navbar navigation */}
-      {/* <div>navigation</div> */}
-
-      {/* navbar end */}
-      <div className="flex flex-row items-center justify-end space-x-4">
-        <UserButton />
-      </div>
-    </div>
-  );
-}
-
-function Logo() {
-  return (
-    <Link href="/">
-      <div className="fill-black">
-        <svg
-          aria-label="Vercel Logo"
-          // fill="#FFFFFF"
-          viewBox="0 0 75 65"
-          height="26"
-          data-testid="dashboard/logo">
-          <path d="M37.59.25l36.95 64H.64l36.95-64z"></path>
-        </svg>
-      </div>
-    </Link>
-  );
-}
